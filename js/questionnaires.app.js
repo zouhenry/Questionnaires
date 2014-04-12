@@ -20,21 +20,21 @@ $(function () {
                 questionPool: [{
                     type: "multipleChoices",
                     question: "\"0\"===false",
-                    choices: { 1: "true", 2: "false", 3: "undefined" },
+                    choices: [{ value: 1, text: "true" }, { value: 0, text: "false" }, { value: 3, text: "undefined" }],
                     answer: 1,
                     score: 1
                 },
                 {
                     type: "multipleChoices",
                     question: "NaN===NaN",
-                    choices: { 1: "true", 2: "false", 3: "undefined" },
+                    choices: [{ value: 1, text: "true" }, { value: 0, text: "false" }, { value: 3, text: "undefined" }],
                     answer: 2,
                     score: 3
                 },
                 {
                     type: "multipleChoices",
                     question: "undefined == null",
-                    choices: { 1: "true", 2: "false", 3: "undefined" },
+                    choices: [{ value: 1, text: "true" }, { value: 0, text: "false" }, { value: 3, text: "undefined" }],
                     answer: 1,
                     score: 2
                 }]

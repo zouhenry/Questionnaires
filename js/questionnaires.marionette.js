@@ -1,7 +1,7 @@
 ﻿window.questionnaires.ViewController = Marionette.Controller.extend({
     itemView: null,
     view: null,
-    getItemViewArgs: function () {
+    itemViewOptions: function () {
         return _.extend({}, this.options, { controller: this, model: this.model });
     },
     getItemView: function () {
@@ -30,7 +30,7 @@
         return this.view;
     },
     onCreatingView: function () {
-        var args = this.getItemViewArgs();
+        var args = this.itemViewOptions();
         var view = this.getItemView();
         this.view = new view(args);
         this.listenTo(this.view, "show", function () {

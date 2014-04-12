@@ -7,27 +7,55 @@ questionnaires.app.module("layout", function (layout, app) {
         className: "row",
         events: {
             "click #btnPrev": function () {
-                var newCount = this.model.get("count") - 1;
-                this.model.set("count", newCount < 0 ? 0 : newCount);
+                var newindex = this.model.get("index") - 1;
+                this.model.set("index", newindex < 1 ? 1 : newindex);
             },
             "click #btnNext": function () {
-                var newCount = this.model.get("count") + 1;
+                var newindex = this.model.get("index") + 1;
                 var total = this.model.get("total");
-                this.model.set("count", newCount > total ? total : newCount);
+                this.model.set("index", newindex > total ? total : newindex);
             }
         },
         bindings: {
-            "#count": {
-                observe: "count"
+            "#index": {
+                observe: "index"
             }
+        },
+        initialize: function () {
+            var maxIndex = this.collection.length - 1;
+            this.listenTo(this.model, "change:index", function (model, index) {
+                index < 1 ? 1 : index;
+                index > maxIndex ? maxIndex : index;
+                var selectedTest = this.collection.at(index - 1);
+                this.collection.trigger("item:selected", selectedTest);
+            });
         },
         onShow: function () {
             this.stickit();
         }
     });
 
+    layout.ChoiceView = Marionette.ItemView.extend({
+        template: "#template_multipleChoice",
+        tagName: "li"
+    });
+
+    layout.TestView = Marionette.CompositeView.extend({
+        template: "#template_testView",
+        itemViewContainer: "[data-id=choices]",
+        itemView:layout.ChoiceView
+    });
+
     layout.HeaderController = questionnaires.ViewController.extend({
         itemView: layout.HeaderView
+    });
+
+
+    layout.TestController = questionnaires.ViewController.extend({
+        itemView: layout.TestView,
+        itemViewOptions: function () {
+            return {model: this.model, collection: new Backbone.Collection(this.model.get("choices")) };
+        }
     });
 
     layout.pageLayout = Marionette.Layout.extend({
@@ -50,16 +78,28 @@ questionnaires.app.module("layout", function (layout, app) {
 
     layout.Controller = questionnaires.ViewController.extend({
         itemView: layout.pageLayout,
+        onInitializing:function(){
+            this.collection = new Backbone.Collection(this.options.questionPool);
+            this.quizModel = this.collection.at(0);
+            this.listenTo(this.collection, "item:selected", function (selectedModel) {
+                this.renderTest(selectedModel);
+            });
+        },
         onViewShow: function () {
             this.renderHeader();
+            this.renderTest(this.quizModel);
         },
         renderHeader: function () {
-            this.headerModel = new Backbone.Model({ total: this.options.totalQuestions, count: 0 });
-            this.headerController = new layout.HeaderController({ model: this.headerModel });
+            this.headerModel = new Backbone.Model({ total: this.options.totalQuestions, index: 1 });
+            this.headerController = new layout.HeaderController({ model: this.headerModel, collection: this.collection });
             this.view.showHeaderView(this.headerController.createView());
         },
-        renderQuiz: function () {
-            //TODO
+        renderTest: function (model) {
+            if (this.testController && model === this.testController.model) {
+                return;
+            }
+            this.testController = new layout.TestController({model: model});
+            this.view.showTestView(this.testController.createView());
         }
     });
 })
