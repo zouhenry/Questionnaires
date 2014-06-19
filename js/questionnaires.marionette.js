@@ -36,6 +36,17 @@
         this.listenTo(this.view, "show", function () {
             this.triggerMethod("view:show");
         });
+        this.delegateEvents();
+    },
+    delegateEvents: function(){
+        Marionette.bindEntityEvents(this, this.view, Marionette.getOption(this, "viewEvents"));
+        Marionette.bindEntityEvents(this, this.model, Marionette.getOption(this, "modelEvents"));
+        Marionette.bindEntityEvents(this, this.collection, Marionette.getOption(this, "collectionEvents"));
+    },
+    undelegateEvents: function(){
+        Marionette.unbindEntityEvents(this, this.view, Marionette.getOption(this, "viewEvents"));
+        Marionette.unbindEntityEvents(this, this.model, Marionette.getOption(this, "modelEvents"));
+        Marionette.unbindEntityEvents(this, this.collection, Marionette.getOption(this, "collectionEvents"));
     },
     close: function () {
         this.triggerMethod("before:close");
@@ -43,6 +54,7 @@
         this.triggerMethod("close");
     },
     onClosing: function () {
+        this.undelegateEvents();
         this.stopListening();
     }
 });
