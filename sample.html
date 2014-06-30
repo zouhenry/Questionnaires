@@ -5,7 +5,8 @@
     <meta charset="utf-8" />
     <title>Questionnaires</title>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/questionnaires.css" />
 </head>
 <body>
     <div id="pageContent" class="container"></div>
@@ -22,13 +23,16 @@
     
     <script type="text/template" id="template_testView">
         <h1 data-id="question"><%= question %>?</h1>
-        <ul data-id="choices"></ul>
+        <ul data-id="choices" class="list_style_none"></ul>
     </script>
     
     <script type="text/template" id="template_multipleChoice">
         <input type="radio" name="choice" value="<%= value %>"><%= text %></input>
     </script>
-
+        
+    <script type="text/template" id="template_score">
+        <h3> Final Grade: <%= correct %> / <%= total %></h3>
+    </script>
     
 
     <script src="http://code.jquery.com/jquery-1.9.0.js"></script>

@@ -14,10 +14,13 @@
     },
     onInitializing: function (options) {
         this.collection = this.getCollection();
-        this.model = this.options.model || (this.collection.length > 0 ? this.collection.at(0) : new Backbone.Model());
+        this.model = this.getModel();
     },
     getCollection: function () {
         return this.collection || Marionette.getOption(this, "collection") || new Backbone.Collection();
+    },
+    getModel: function () {
+        return this.options.model || (this.collection.length > 0 ? this.collection.at(0) : new Backbone.Model());
     },
     createView: function () {
         var doCreateView = this.triggerMethod("before:create:view");
